@@ -4,20 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 public class EnemyAi : MonoBehaviour
 {
+    private int dmg = 6;
+    int e;
+    bool abouttodie = false;
     bool isdead = false;
     private bool firingnow = false;
     public AudioClip firesound;
     public AudioSource source;
     public GameObject enemy;
     public float health = 100;
-    public float dmg = 10;
     public GameObject player;
     public GameObject prefab;
     public Transform firePoint;
     bool isMove = false;
     bool haltanim = false;
     public bool haltallanim = false;
-    float speed = 0.33f;
+    float speed = 0.23f;
     public float bulletForce = 0.1f;
     public Transform playerpos;
     public Transform witchpos;
@@ -37,22 +39,26 @@ public class EnemyAi : MonoBehaviour
 
     void Update()
     {
+        if (Vector3.Distance(currentPosition, targetPosition) < 10)
+        {
+            isMove = true;
+        }
 
         targetPosition = playerpos.position;
         currentPosition = witchpos.position;
         //isMove = true;
-        if (isdead == true)
+        if (isdead == true && abouttodie == false)
         {
 
         anim.Play("Death 0");
         }
 
 
-        if (isMove == true && haltallanim == false && isdead == false)
+        if (isMove == true && haltallanim == false && isdead == false && abouttodie == false)
         {
             GreenMail();
         }
-        else if(isdead == false)
+        else if(isdead == false && abouttodie == false)
         {
             anim.Play("Rifle Idle");
         }
@@ -84,33 +90,40 @@ public class EnemyAi : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider col)
-    {
-
-        if (col.gameObject.name == "Player")
-        {
-            isMove = true;
-        }
-    }
-
     IEnumerator firing()
     {
         firingnow = true;
         StartCoroutine(firebullet());
-
-        yield return new WaitForSeconds(0.5f);
+        e = UnityEngine.Random.Range(1,4);
+        yield return new WaitForSeconds(1.5f);
         firingnow = false;
     }
 
     IEnumerator firebullet()
     {
         
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < e; i++)
+        
         {
-        source.PlayOneShot(firesound);
+            yield return new WaitForSeconds(0.03f);
+
+            RaycastHit hit;
+            Ray ray = new Ray(firePoint.transform.position, firePoint.transform.forward);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Transform objectHit = hit.transform;
+                if (objectHit.GetComponent<PlayerMovement>())
+                {
+                    objectHit.GetComponent<PlayerVitalSigns>().damagetaken(dmg);
+                }
+
+            }
+
+            source.PlayOneShot(firesound);
         GameObject newBullet = Instantiate(prefab, firePoint.position, firePoint.rotation);
         newBullet.GetComponent<Rigidbody>().AddForce(firePoint.forward * bulletForce);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         Destroy(newBullet);
         }
     }
@@ -127,8 +140,10 @@ public class EnemyAi : MonoBehaviour
     }
     IEnumerator dead()
     {
+        abouttodie = true;
         anim.Play("Death");
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(2.35f);
         isdead = true;
+        abouttodie = false;
     }
 }

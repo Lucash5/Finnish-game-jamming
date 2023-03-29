@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class PistolScript : MonoBehaviour
 {
-    public Camera camera;
+    public UnityEngine.UI.Button button;
+    private bool Startt = false;
 
+    private bool canreload = true;
+    public Camera camera;
+    public MeshRenderer gunenabled;
     public AudioClip firesound;
     public AudioSource source;
     public ParticleSystem firePs;
@@ -13,6 +17,7 @@ public class PistolScript : MonoBehaviour
     public GameObject prefab;
     public Transform firePoint;
     public float bulletForce = 0.1f;
+    public int bulletamount = 225;
     public int bulletCount = 9;
     public int damage = 30;
     public float reloadTime = 2f;
@@ -31,13 +36,26 @@ public class PistolScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (bulletamount <= 0)
+        {
+            canreload = false;
+        }
+        button.onClick.AddListener(gameon);
+        if (Startt == true)
+        {
+
+            if (gunenabled.enabled == true)
+        {
+
         StartCoroutine(GunFire());
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.R) && canreload == true)
             {
                 reloading = true;
                 source.PlayOneShot(reloadsound);
                 Invoke("Reload", reloadTime);
             }
+        }
+        }
     }
     IEnumerator GunFire()
     {
@@ -56,12 +74,11 @@ public class PistolScript : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Transform objectHit = hit.transform;
-
                 if (objectHit.GetComponent<EnemyAi>())
                 {
                     objectHit.GetComponent<EnemyAi>().TakeDamage(damage);
                 }
-
+                
             }
             bulletCount--;
 
@@ -83,5 +100,16 @@ public class PistolScript : MonoBehaviour
     void ResetFireCD()
     {
         isOnCD = false;
+    }
+
+    private void gameon()
+    {
+        Startt = true;
+    }
+
+    public void refill(int ammo)
+    {
+        bulletamount += ammo;
+        canreload = true;
     }
 }

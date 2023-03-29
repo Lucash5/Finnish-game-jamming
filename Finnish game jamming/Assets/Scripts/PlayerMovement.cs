@@ -5,6 +5,13 @@ using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public UnityEngine.UI.Button button;
+    private bool Startt = false;
+
+    public GameObject vital;
+    private bool swinging = false;
+    public MeshRenderer gunmesh;
+    public MeshRenderer knifemesh;
     Rigidbody rb;
     public float realSPeed;
     public float speed = 350;
@@ -14,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     Animator anim;
     public AudioSource AS;
     public AudioClip AC;
+    public AudioClip AC2;
 
     Vector3 playerInput;
     // Start is called before the first frame update
@@ -26,35 +34,48 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        button.onClick.AddListener(gameon);
+        if (Startt == true)
+        {
+
         walkspeed();
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && !Input.GetKey(KeyCode.Mouse1))
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && !Input.GetKey(KeyCode.Mouse1) && (!knifemesh.enabled == true || !Input.GetKey(KeyCode.Mouse0)) && swinging == false)
         {
             StartCoroutine(idling());
         }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Mouse1))
+        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Mouse1) && (!knifemesh.enabled == true || !Input.GetKey(KeyCode.Mouse0)) && swinging == false)
         {
             StartCoroutine(walking());
         }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Mouse1))
+        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Mouse1) && swinging == false)
         {
             StartCoroutine(running());
         }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1))
+        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1) && gunmesh.enabled == true && swinging == false)
         {
             StartCoroutine(pistolrunning());
         }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && !Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1))
+        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && !Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1) && gunmesh.enabled == true && swinging == false)
         {
             StartCoroutine(pistolwalking());
         }
-        else if (Input.GetKey(KeyCode.Space))
+        else if (Input.GetKey(KeyCode.Space) && swinging == false)
         {
             StartCoroutine(pistoljump());
         }
-        else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.Mouse1))
+        else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.Mouse1) && gunmesh.enabled == true && swinging == false)
         {
             StartCoroutine(pistolidle());
         }
+        else if (Input.GetKey(KeyCode.Mouse0) && knifemesh.enabled == true && swinging == false)
+        {
+            StartCoroutine(knifeswing());
+        }
+        else if (Input.GetKey(KeyCode.Mouse1) && knifemesh.enabled == true && swinging == false)
+        {
+            StartCoroutine(knifeblock());
+        }
+
         if (rb.velocity.y > -0.05f && rb.velocity.y < 0.05f)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -63,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
                 AS.pitch = 1;
                 AS.PlayOneShot(jumpsound, 0.5f);
             }
+        }
         }
     }
 
@@ -108,6 +130,22 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0);
     }
 
+    IEnumerator knifeswing()
+    {
+        swinging = true;
+        anim.Play("Stable Sword Inward Slash");
+        yield return new WaitForSeconds(1f);
+        AS.PlayOneShot(AC2);
+        yield return new WaitForSeconds(0.3f);
+        swinging = false;
+    }
+    IEnumerator knifeblock()
+    {
+        vital.GetComponent<PlayerVitalSigns>().parry(true);
+        anim.Play("Standing Block Idle");
+        yield return new WaitForSeconds(0.1f);
+        vital.GetComponent<PlayerVitalSigns>().parry(false);
+    }
     private void walkspeed()
     {
 
@@ -119,6 +157,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
+            if (Startt == true)
+            {
+
             rb.velocity = playerInput;
             if (rb.velocity.y > -0.05f && rb.velocity.y < 0.05f && !AS.isPlaying)
             {
@@ -133,7 +174,12 @@ public class PlayerMovement : MonoBehaviour
                 AS.PlayOneShot(AC);
                 }
             }
+            }
         }
     }
 
+    private void gameon()
+    {
+        Startt = true;
+    }
 }
