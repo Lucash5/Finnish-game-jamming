@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 350;
     public AudioClip jumpsound;
     Animator anim;
-    AudioSource AS;
+    public AudioSource AS;
+    public AudioClip AC;
 
     Vector3 playerInput;
     // Start is called before the first frame update
@@ -26,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         walkspeed();
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space))
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && !Input.GetKey(KeyCode.Mouse1))
         {
             StartCoroutine(idling());
         }
@@ -50,12 +51,16 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(pistoljump());
         }
-
+        else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.Mouse1))
+        {
+            StartCoroutine(pistolidle());
+        }
         if (rb.velocity.y > -0.05f && rb.velocity.y < 0.05f)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 rb.AddForce(Vector3.up * jumpForce);
+                AS.pitch = 1;
                 AS.PlayOneShot(jumpsound, 0.5f);
             }
         }
@@ -97,6 +102,11 @@ public class PlayerMovement : MonoBehaviour
         anim.Play("Pistol Jump");
         yield return new WaitForSeconds(0);
     }
+    IEnumerator pistolidle()
+    {
+        anim.Play("Pistol Idle");
+        yield return new WaitForSeconds(0);
+    }
 
     private void walkspeed()
     {
@@ -110,6 +120,19 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
             rb.velocity = playerInput;
+            if (rb.velocity.y > -0.05f && rb.velocity.y < 0.05f && !AS.isPlaying)
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    AS.pitch = 3f;
+                    AS.PlayOneShot(AC);
+                }
+                else
+                {
+                AS.pitch = 1.5f;
+                AS.PlayOneShot(AC);
+                }
+            }
         }
     }
 
