@@ -2,6 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Xml.Schema;
+using UnityEngine.UIElements;
+using UnityEngine.UI;
+using TMPro;
 public class EnemyAi : MonoBehaviour
 {
     private int dmg = 6;
@@ -20,7 +24,7 @@ public class EnemyAi : MonoBehaviour
     bool isMove = false;
     bool haltanim = false;
     public bool haltallanim = false;
-    float speed = 0.23f;
+    float speed = 0.15f;
     public float bulletForce = 0.1f;
     public Transform playerpos;
     public Transform witchpos;
@@ -29,7 +33,6 @@ public class EnemyAi : MonoBehaviour
     Vector3 directionOfTravel;
     Animator anim;
 
-    [HideInInspector] public static int witchesRemaining = 0;
 
     void Start()
     {
@@ -70,7 +73,7 @@ public class EnemyAi : MonoBehaviour
         //targetPosition = objB.transform.position; // Get position of object B
         //currentPosition = this.transform.position; // Get position of object A
         directionOfTravel = targetPosition - currentPosition;
-        if (Vector3.Distance(currentPosition, targetPosition) > .1f && Vector3.Distance(currentPosition, targetPosition) < 75 && haltallanim == false)
+        if (Vector3.Distance(currentPosition, targetPosition) > .1f && Vector3.Distance(currentPosition, targetPosition) < 30 && haltallanim == false)
         {
             if (haltanim == false && firingnow == false)
             {
@@ -140,6 +143,10 @@ public class EnemyAi : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        if (isMove == false)
+        {
+            isMove = true;
+        }
 
         if (health <= 0 && isdead == false)
         {
@@ -154,5 +161,6 @@ public class EnemyAi : MonoBehaviour
         yield return new WaitForSeconds(2.35f);
         isdead = true;
         abouttodie = false;
+        player.GetComponent<PlayerVitalSigns>().remaining(1);
     }
 }

@@ -1,34 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UIElements;
+using UnityEngine.UI;
+using TMPro;
 public class AudioListPlayer : MonoBehaviour
 {
+    public TextMeshProUGUI text;
+    private bool rp = false;
+    public Transform P;
+    public Transform T;
+    public AudioClip rickroll;
     public List<AudioClip> audioClips;  // Lista AudioClip-objekteista
     public AudioSource audioSource;     // AudioSource-objekti
 
-    private int currentClipIndex = 0;   // Indeksi nykyiselle Audioclipille listalla
+    private int currentClipIndex = -1;   // Indeksi nykyiselle Audioclipille listalla
 
-    // Update-metodi kutsutaan jokaisella framella
+    private void Start()
+    {
+
+    }
     void Update()
     {
-        // Jos pelaaja painaa E-näppäintä
-        if (Input.GetKeyDown(KeyCode.E))
+
+        if (P.position.x > -18 && P.position.x < -12 && P.position.z < -69 && P.position.z > -75 && rp == false)
         {
-            // Jos olemme viimeisellä Audioclipillä, aloitamme listan alusta
+            text.enabled = true;
+            if (Input.GetKey(KeyCode.E))
+            {
+            text.enabled = false;
+            rp = true;
+            audioSource.Stop();
+            audioSource.PlayOneShot(rickroll);
+            }
+        }
+        else
+        {
+            text.enabled = false;
+        }
+
+
+
             if (currentClipIndex >= audioClips.Count)
             {
                 currentClipIndex = 0;
             }
-
-            // Aseta AudioSource-objektin clip-arvoksi seuraava Audioclip-listalta
-            audioSource.clip = audioClips[currentClipIndex];
-
-            // Soita Audioclip
-            audioSource.Play();
-
-            // Siirry seuraavaan Audioclipiin listalla
+            if (!audioSource.isPlaying)
+            {
             currentClipIndex++;
-        }
+            audioSource.clip = audioClips[currentClipIndex];
+            audioSource.Play();
+            }
     }
+
 }

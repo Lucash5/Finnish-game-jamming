@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public UnityEngine.UI.Button button;
     private bool Startt = false;
 
+    private bool isdead;
     public GameObject vital;
     private bool swinging = false;
     public MeshRenderer gunmesh;
@@ -36,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         button.onClick.AddListener(gameon);
+        if (isdead == false)
+        {
+
         if (Startt == true)
         {
 
@@ -75,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
         else if (Input.GetKey(KeyCode.Mouse1) && knifemesh.enabled == true && swinging == false)
         {
             StartCoroutine(knifeblock());
+        }
         }
 
         if (rb.velocity.y > -0.05f && rb.velocity.y < 0.05f)
@@ -187,5 +192,17 @@ public class PlayerMovement : MonoBehaviour
     private void gameon()
     {
         Startt = true;
+    }
+
+    public void isded(bool tru)
+    {
+        if (tru == true)
+        {
+            isdead = true;
+        }
+        else
+        {
+            isdead = false;
+        }
     }
 }

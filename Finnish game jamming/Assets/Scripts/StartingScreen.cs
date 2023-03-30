@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using TMPro;
 public class StartingScreen : MonoBehaviour
 {
+    public GameObject obj;
+
     public UnityEngine.UI.Image img;
     public UnityEngine.UI.Image img2;
     public UnityEngine.UI.Image img3;
@@ -19,6 +21,7 @@ public class StartingScreen : MonoBehaviour
     public TextMeshProUGUI text4;
     public TextMeshProUGUI text5;
     public TextMeshProUGUI text6;
+    public TextMeshProUGUI text7;
     public TextMeshProUGUI btntext;
     public TextMeshProUGUI btntext2;
     public TextMeshProUGUI btntext3;
@@ -28,7 +31,7 @@ public class StartingScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        obj.GetComponent<GameSongs>().song(1);
     }
 
     // Update is called once per frame
@@ -58,6 +61,7 @@ public class StartingScreen : MonoBehaviour
 
     void gameson()
     {
+        obj.GetComponent<GameSongs>().song(2);
         img5.enabled = false;
         text.enabled = false;
         text2.enabled = false;
@@ -72,6 +76,7 @@ public class StartingScreen : MonoBehaviour
         text4.enabled = true;
         text5.enabled = true;
         text6.enabled = true;
+        text7.enabled = true;
         img7.enabled = true;
         img6.enabled = true;
 

@@ -4,8 +4,13 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UI;
 using TMPro;
+using System.Xml.Schema;
 public class PlayerVitalSigns : MonoBehaviour
 {
+    public GameObject player;
+    public Transform PP;
+    public Transform SP;
+    int enemiesremaining = 30;
     int modifier = 0;
     public int ammo = 225;
     public int ammo2 = 225;
@@ -14,19 +19,29 @@ public class PlayerVitalSigns : MonoBehaviour
     public TextMeshProUGUI text;
     public TextMeshProUGUI text2;
     public TextMeshProUGUI text3;
+    public TextMeshProUGUI text4;
+    public UnityEngine.UI.Image img;
     public MeshRenderer am;
     public MeshRenderer am2;
-    Animator anim;
+    public Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        text4.text = "Objective : Clear out the Enemies " + enemiesremaining.ToString();
+
+
+        if (health <= 0)
+        {
+            StartCoroutine(respawn());
+            
+        }
         text.text = health.ToString() + "/100";
         text3.text = power.ToString() + "%";
 
@@ -37,6 +52,11 @@ public class PlayerVitalSigns : MonoBehaviour
         else if (am2.enabled == true)
         {
         text2.text = ammo2.ToString();
+        }
+
+        if (enemiesremaining <= 0)
+        {
+            img.enabled = true;
         }
 
     }
@@ -106,5 +126,20 @@ public class PlayerVitalSigns : MonoBehaviour
         {
             power = 100;
         }
+    }
+
+    public void remaining(int minus)
+    {
+        enemiesremaining -= minus;
+    }
+
+    IEnumerator respawn()
+    {
+        player.GetComponent<PlayerMovement>().isded(true);
+        anim.Play("Death");
+        yield return new WaitForSeconds(2f);
+        PP.position = SP.position;
+        health = 100;
+        player.GetComponent<PlayerMovement>().isded(false);
     }
 }
