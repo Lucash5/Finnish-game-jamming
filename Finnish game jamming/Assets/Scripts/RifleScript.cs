@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PistolScript : MonoBehaviour
+public class RifleScript : MonoBehaviour
 {
     public UnityEngine.UI.Button button;
     private bool Startt = false;
@@ -18,9 +18,9 @@ public class PistolScript : MonoBehaviour
     public Transform firePoint;
     public float bulletForce = 0.1f;
     public int bulletamount = 225;
-    public int bulletCount = 9;
-    public int damage = 30;
-    public float reloadTime = 1.5f;
+    public int bulletCount = 25;
+    public int damage = 20;
+    public float reloadTime = 2f;
     public AudioClip reloadsound;
 
     bool reloading;
@@ -39,6 +39,7 @@ public class PistolScript : MonoBehaviour
 
         if (bulletamount <= 0)
         {
+            bulletamount = 0;
             canreload = false;
         }
         button.onClick.AddListener(gameon);
@@ -46,25 +47,26 @@ public class PistolScript : MonoBehaviour
         {
 
             if (gunenabled.enabled == true)
-        {
-
-        StartCoroutine(GunFire());
-            if (Input.GetKeyDown(KeyCode.R) && canreload == true && reloading == false)
             {
-                reloading = true;
-                source.PlayOneShot(reloadsound);
-                Invoke("Reload", reloadTime);
-                    int t = 9 - bulletCount;
+
+                StartCoroutine(GunFire());
+                if (Input.GetKeyDown(KeyCode.R) && canreload == true && reloading == false)
+                {
+                    reloading = true;
+                    source.PlayOneShot(reloadsound);
+                    Invoke("Reload", reloadTime);
+                    int t = 25 - bulletCount;
                     bulletamount -= t;
                     ammo.GetComponent<PlayerVitalSigns>().ammolost(t);
+                }
             }
         }
-        }
+        
     }
     IEnumerator GunFire()
     {
         //GetMouseButton
-        if (Input.GetMouseButtonDown(0) && !isOnCD && reloading == false && bulletCount != 0)
+        if (Input.GetMouseButton(0) && !isOnCD && reloading == false && bulletCount != 0)
         {
             //bulletCount <= 0
             isOnCD = true;
@@ -74,7 +76,7 @@ public class PistolScript : MonoBehaviour
 
             RaycastHit hit;
             Ray ray = new Ray(firePoint.transform.position, firePoint.transform.forward);
-            
+
             if (Physics.Raycast(ray, out hit))
             {
                 Transform objectHit = hit.transform;
@@ -82,7 +84,7 @@ public class PistolScript : MonoBehaviour
                 {
                     objectHit.GetComponent<EnemyAi>().TakeDamage(damage);
                 }
-                
+
             }
             bulletCount--;
 

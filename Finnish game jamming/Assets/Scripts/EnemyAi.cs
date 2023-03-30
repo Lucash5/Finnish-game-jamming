@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyAi : MonoBehaviour
 {
     private int dmg = 6;
+    public GameObject obj;
     int e;
     bool abouttodie = false;
     bool isdead = false;
@@ -87,6 +88,14 @@ public class EnemyAi : MonoBehaviour
         else
         {
             isMove = false;
+        }
+        if (Vector3.Distance(currentPosition, targetPosition) < 2.5f)
+        {
+            obj.GetComponent<KnifeScript>().stab(true);
+        }
+        else
+        {
+            obj.GetComponent<KnifeScript>().stab(false);
         }
     }
 
