@@ -26,10 +26,6 @@ public class PlayerVitalSigns : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ()
-        {
-
-        }
         
         text.text = health.ToString() + "/100";
         text3.text = power.ToString() + "%";
