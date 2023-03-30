@@ -130,7 +130,7 @@ public class PlayerVitalSigns : MonoBehaviour
 
     public void remaining(int minus)
     {
-        enemiesremaining -= minus;
+        enemiesremaining = enemiesremaining - minus;
     }
 
     IEnumerator respawn()

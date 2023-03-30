@@ -148,8 +148,9 @@ public class EnemyAi : MonoBehaviour
             isMove = true;
         }
 
-        if (health <= 0 && isdead == false)
+        if (health <= 0 && isdead == false && abouttodie == false)
         {
+        player.GetComponent<PlayerVitalSigns>().remaining(1);
             StartCoroutine(dead());
             //DIE
         }
@@ -161,6 +162,5 @@ public class EnemyAi : MonoBehaviour
         yield return new WaitForSeconds(2.35f);
         isdead = true;
         abouttodie = false;
-        player.GetComponent<PlayerVitalSigns>().remaining(1);
     }
 }
