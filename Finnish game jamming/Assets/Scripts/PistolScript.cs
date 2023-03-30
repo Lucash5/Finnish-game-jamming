@@ -7,6 +7,7 @@ public class PistolScript : MonoBehaviour
     public UnityEngine.UI.Button button;
     private bool Startt = false;
 
+    public GameObject ammo;
     private bool canreload = true;
     public Camera camera;
     public MeshRenderer gunenabled;
@@ -36,6 +37,7 @@ public class PistolScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (bulletamount <= 0)
         {
             canreload = false;
@@ -48,11 +50,14 @@ public class PistolScript : MonoBehaviour
         {
 
         StartCoroutine(GunFire());
-            if (Input.GetKeyDown(KeyCode.R) && canreload == true)
+            if (Input.GetKeyDown(KeyCode.R) && canreload == true && reloading == false)
             {
                 reloading = true;
                 source.PlayOneShot(reloadsound);
                 Invoke("Reload", reloadTime);
+                    int t = 9 - bulletCount;
+                    bulletamount -= t;
+                    ammo.GetComponent<PlayerVitalSigns>().ammolost(t);
             }
         }
         }

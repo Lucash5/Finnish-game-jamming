@@ -10,8 +10,15 @@ public class StartingScreen : MonoBehaviour
     public UnityEngine.UI.Image img2;
     public UnityEngine.UI.Image img3;
     public UnityEngine.UI.Image img4;
+    public UnityEngine.UI.Image img5;
+    public UnityEngine.UI.Image img6;
+    public UnityEngine.UI.Image img7;
     public TextMeshProUGUI text;
     public TextMeshProUGUI text2;
+    public TextMeshProUGUI text3;
+    public TextMeshProUGUI text4;
+    public TextMeshProUGUI text5;
+    public TextMeshProUGUI text6;
     public TextMeshProUGUI btntext;
     public TextMeshProUGUI btntext2;
     public TextMeshProUGUI btntext3;
@@ -51,6 +58,7 @@ public class StartingScreen : MonoBehaviour
 
     void gameson()
     {
+        img5.enabled = false;
         text.enabled = false;
         text2.enabled = false;
         btntext.enabled = false;
@@ -60,6 +68,13 @@ public class StartingScreen : MonoBehaviour
         img.enabled = false;
         img2.enabled = false;
         img4.enabled = true;
+        text3.enabled = true;
+        text4.enabled = true;
+        text5.enabled = true;
+        text6.enabled = true;
+        img7.enabled = true;
+        img6.enabled = true;
+
     }
 
     void back()

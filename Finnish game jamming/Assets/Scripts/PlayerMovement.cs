@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private bool swinging = false;
     public MeshRenderer gunmesh;
     public MeshRenderer knifemesh;
+    public MeshRenderer riflemesh;
     Rigidbody rb;
     public float realSPeed;
     public float speed = 350;
@@ -51,11 +52,11 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(running());
         }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1) && gunmesh.enabled == true && swinging == false)
+        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1) && (gunmesh.enabled == true || riflemesh.enabled == true) && swinging == false)
         {
             StartCoroutine(pistolrunning());
         }
-        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && !Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1) && gunmesh.enabled == true && swinging == false)
+        else if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && !Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse1) && (gunmesh.enabled == true || riflemesh.enabled == true) && swinging == false)
         {
             StartCoroutine(pistolwalking());
         }
@@ -63,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(pistoljump());
         }
-        else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.Mouse1) && gunmesh.enabled == true && swinging == false)
+        else if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.Mouse1) && (gunmesh.enabled == true || riflemesh.enabled == true) && swinging == false)
         {
             StartCoroutine(pistolidle());
         }
@@ -145,6 +146,11 @@ public class PlayerMovement : MonoBehaviour
         anim.Play("Standing Block Idle");
         yield return new WaitForSeconds(0.1f);
         vital.GetComponent<PlayerVitalSigns>().parry(false);
+    }
+    IEnumerator firingrifle()
+    {
+        anim.Play("Firing Rifle");
+        yield return new WaitForSeconds(0);
     }
     private void walkspeed()
     {

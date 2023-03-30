@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmmoRefill : MonoBehaviour
+public class PowerRefill : MonoBehaviour
 {
     public AudioSource source;
     public AudioClip clip;
-    public GameObject ammo;
+    public GameObject power;
     public GameObject vital;
 
     public void OnCollisionEnter(Collision collision)
@@ -14,9 +14,8 @@ public class AmmoRefill : MonoBehaviour
         if (collision.gameObject.GetComponent<PlayerMovement>())
         {
             source.PlayOneShot(clip);
-            collision.gameObject.GetComponent<PistolScript>().refill(35);
-            vital.GetComponent<PlayerVitalSigns>().ammotaken(35);
-            Destroy(ammo);
+            vital.GetComponent<PlayerVitalSigns>().energy(33.3f);
+            Destroy(power);
         }
     }
 }
